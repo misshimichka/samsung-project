@@ -82,11 +82,13 @@ public class TaskFragment extends Fragment {
     void getImage() {
 
         DatabaseReference databaseReference = DatabaseService.getDatabase().getReference("users/" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 FirebaseStorage storage = FirebaseStorage.getInstance("gs://samsung-project-c692e.appspot.com");
-                StorageReference storageRef = storage.getReference("tasks/" + (long) snapshot.child("tasks").getValue() + 1 + ".png");
+                long tasks = (long) snapshot.child("tasks").getValue() + 1;
+                System.out.println("tasks/" + tasks + ".png");
+                StorageReference storageRef = storage.getReference("tasks/" + tasks + ".png");
 
                 final int ONE_MEGABYTE = 1024 * 1024;
                 storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
